@@ -15,6 +15,7 @@ let cupido;
 
 let usuario = new Galan("", "", "");
 
+
 //Pedir Nombre
 nombreUsuario = usuario.obtenerNombre();
 console.log("Nombre de Usuario: " + nombreUsuario);
@@ -25,12 +26,20 @@ console.log("Sobrenombre de Usuario: " + sobreNombreUsuario);
 
 //Animal
 animal = usuario.obtenerAnimal();
+//animal = usuario.obtenerAnimalDOM();
 console.log("Animal: " + animal);
 puntosEspecie = usuario.puntosAnimal;
 console.log("Puntos de animal: " + puntosEspecie);
 
 //Cupido
 cupido = new Cupido(usuario);
+
+//Renderizar Armas de Seduccion
+cupido.renderArmasSeduccionDisponibles();
+
+cupido.renderArmasSeduccionElegidas();
+
+
 
 //Como te despide
 puntosDespedida = cupido.obtenerPuntosDespide();

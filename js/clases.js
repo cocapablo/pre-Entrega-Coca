@@ -86,16 +86,95 @@ class Galan {
                 
     }
 
- 
+    obtenerNombreDOM() {
+        let nombreUsuario = "";
+        let nombreGalan;
+        
+        nombreGalan = document.getElementById("nombreGalan");
+        nombreUsuario = nombreGalan.value;
+
+        console.log("Nombre del Usuario: " + nombreUsuario);
+
+        if (nombreUsuario.trim().length == 0) {
+            alert("Debe ingresar un nombre");
+            return "";
+        }
+
+        this.nombre = nombreUsuario;
+    
+        return nombreUsuario;
+    }
+
+    obtenerSobreombreDOM() {
+        let sobrenombreUsuario = "";
+        let sobrenombreGalan;
+        
+        sobrenombreGalan = document.getElementById("sobrenombreGalan");
+        sobrenombreUsuario = sobrenombreGalan.value;
+
+        console.log("Sobrenombre del Usuario: " + sobrenombreUsuario);
+
+        if (sobrenombreUsuario.trim().length == 0) {
+            alert("Debe ingresar un Sobrenombre");
+            return "";
+        }
+
+        this.sobrenombre = sobrenombreUsuario;
+    
+        return sobrenombreUsuario;
+    }
+
+    obtenerAnimalDOM() {
+        let puntos = 0;
+        let opcion = 0;
+        let animalGalan;
+    
+        
+        animalGalan = document.getElementById("animalGalan");
+        opcion = parseInt(animalGalan.value);
+
+        console.log("Opción elegida de animal: " + opcion);
+
+        switch (opcion) {
+            case 1:
+                this.animal = "León";
+                puntos = 6;
+                break;
+            case 2:
+                this.animal = "Mono"
+                puntos = 8;
+                ;
+                break
+            case 3:
+                this.animal = "Conejo";
+                puntos = 10;
+                break
+            case 4:
+                this.animal = "Axolote";
+                puntos = 1;
+                break;
+            default:
+                this.animal = "";
+                puntos = 0;
+
+        }
+
+        this.puntosAnimal = puntos;
+
+        return this.animal;
+                
+    }
+    
 
 
 }
 
 class ArmaSeduccion {
-    constructor(id, sNombre, poder) {
+    constructor(id, sNombre, poder, imagen) {
         this.idArma = id;
         this.nombre = sNombre;
         this.poderSeduccion = poder; //1, 2, o 3
+        this.imagen = imagen;
     }
 
     obtenerPoder(poder) {
@@ -136,24 +215,30 @@ class Cupido {
         this.armasSeduccion = [];
 
         //Perfume
-        arma = new ArmaSeduccion(1, "Perfume", 2);
+        arma = new ArmaSeduccion(1, "Perfume", 2, "images/perfume.jpeg");
         this.armasSeduccion.push(arma);
 
         //Chamuyo
-        arma = new ArmaSeduccion(2, "Chamuyo", 1);
+        arma = new ArmaSeduccion(2, "Chamuyo", 1, "images/chamuyo.jpeg");
         this.armasSeduccion.push(arma);
 
         //Bailar
-        arma = new ArmaSeduccion(3, "Saber bailar", 2);
+        arma = new ArmaSeduccion(3, "Saber bailar", 2, "images/saberbailar.jpeg");
         this.armasSeduccion.push(arma);
 
         //Ser millonario
-        arma = new ArmaSeduccion(4, "Ser millonario", 2);
+        arma = new ArmaSeduccion(4, "Ser millonario", 2, "images/sermillonario.jpeg");
         this.armasSeduccion.push(arma);
 
         //Ser influenecer
-        arma = new ArmaSeduccion(5, "Ser influencer", 3);
+        arma = new ArmaSeduccion(5, "Ser influencer", 3, "images/serinfluencer.jpeg");
         this.armasSeduccion.push(arma);
+
+        //Guardo las armas en Local Storage
+        this.guardarArmasSeduccionDisponiblesLS(this.armasSeduccion);
+
+        //Borro las armas elegidas
+        localStorage.removeItem("armasSeducccionElegidas");
 
         //Puntos Despide
         this.puntosDespide = 0;
@@ -229,7 +314,7 @@ class Cupido {
         this.obtenerPuntosObtenidos = () => {
             let puntosTotales;
 
-            puntosTotales = this.puntosDespide + this.puntosMirada + this.galan.puntosAnimal + this.puntosLugar + + this.puntosSeduccion + this.puntosSuerte;
+            puntosTotales = this.puntosDespide + this.puntosMirada + this.galan.puntosAnimal + this.puntosLugar + this.puntosSeduccion + this.puntosSuerte;
 
             return puntosTotales;
         }
@@ -241,6 +326,61 @@ class Cupido {
             return porcentaje;
         } 
 
+        //Metodos de DOM
+        this.renderArmasSeduccionDisponibles = () => {
+            let armasRestantes = [];
+
+            armasRestantes = this.cargarArmasSeduccionDisponiblesLS();
+
+            
+            let contenidoHTML = "<h3> Armas de Seducción disponibles </h3>";
+            contenidoHTML += "<p>Elige que 3 armas de seducción vas a utilizar</p>";
+         
+            armasRestantes.forEach(arma => {
+                contenidoHTML += `
+                <div class="col-md-2 mb-5 text-center">
+                    <div class="card" >
+                    <img src="${arma.imagen}" class="card-img-top" alt="${arma.nombre}">
+                        <div class="card-body">
+                            <h5 class="card-title">${arma.nombre}</h5>
+                            <a href="#" class="btn btn-warning" onclick="cupido.elegirArmaSeduccion(${arma.idArma})">Agregar (+)</a>
+                        </div>
+                    </div>
+                </div>`;    
+            });
+            
+            console.log("HTML Armas Disponibles: " + contenidoHTML);
+
+            document.getElementById("armasSeducccionDisponibles").innerHTML = contenidoHTML;
+        }
+ 
+        this.renderArmasSeduccionElegidas = () => {
+            const armasElegidas = this.cargarArmasSeduccionElegidasLS();
+        
+            let contenidoHTML = `
+            <h3> Armas de Seducción elegidas </h3>
+            <table class="table">`;
+        
+            armasElegidas.forEach(arma => {
+                contenidoHTML += `
+                <tr>
+                    <td>
+                        <img src="${arma.imagen}" alt="${arma.nombre}" width="64">
+                    </td>
+                    <td>
+                        ${arma.nombre}
+                    </td>
+                    
+                </tr>
+                `;    
+            });
+        
+            contenidoHTML += "</table>";
+
+            console.log(contenidoHTML);
+        
+            document.getElementById("armasSeduccionElegidas").innerHTML = contenidoHTML;
+        }
     }
 
     obtenerPuntosDespide() {
@@ -475,4 +615,293 @@ class Cupido {
 
         return puntosTotales;
     }
+
+    elegirArmaSeduccion(idArmaelegida) {
+        let armaElegida;
+        let armasRestantes = [];
+        let armasElegidas;
+        let indiceElegido;
+
+        //Obtengo las armas disponibles
+        armasRestantes = this.cargarArmasSeduccionDisponiblesLS();
+
+        if (armasRestantes.length <= 2) {
+            alert("Ya eligió sus 3 armas de seducción");
+            return;
+        }
+       
+        //Obtengo el arma elegida
+        armaElegida = armasRestantes.find((e) => e.idArma == idArmaelegida);
+        console.log("Arma elegida: " + armaElegida.nombre);
+
+        //Obtengo las armas elegidas
+        armasElegidas = this.cargarArmasSeduccionElegidasLS();
+
+        //Agrego el arma elegida nueva
+        armasElegidas.push(armaElegida);
+
+        //Guardo las armas elegidas
+        this.guardarArmasSeduccionElegidasLS(armasElegidas);
+
+        //Retiro el arma elegida de las armas restantes
+        indiceElegido = armasRestantes.indexOf(armaElegida);
+        console.log("Indice de arma elegida: " + indiceElegido);
+
+        armasRestantes.splice(indiceElegido, 1);
+
+        //Gardo las armas restantes
+        this.guardarArmasSeduccionDisponiblesLS(armasRestantes);
+
+        //Renderizo Armas Disponibles
+        this.renderArmasSeduccionDisponibles();
+
+        //Renderizo Armas elegidas
+        this.renderArmasSeduccionElegidas();
+
 }
+
+    guardarArmasSeduccionDisponiblesLS(armasDisponibles) {
+        localStorage.setItem("armasSeducccionDisponibles", JSON.stringify(armasDisponibles));
+    }
+
+    cargarArmasSeduccionDisponiblesLS() {
+        let armasDisponibles;
+    
+        armasDisponibles = JSON.parse(localStorage.getItem("armasSeducccionDisponibles")) || [];
+    
+        return armasDisponibles;
+    }
+
+    guardarArmasSeduccionElegidasLS(armasElegidas) {
+        localStorage.setItem("armasSeducccionElegidas", JSON.stringify(armasElegidas));
+    }
+
+    cargarArmasSeduccionElegidasLS() {
+        let armasElegidas;
+    
+        armasElegidas = JSON.parse(localStorage.getItem("armasSeducccionElegidas")) || [];
+    
+        return armasElegidas;
+    }
+
+    obtenerPuntosDespideDOM() {
+        let puntos = 0;
+        let despideGalan;
+        let opcion = 0;
+    
+        despideGalan = document.getElementById("despideGalan");
+        opcion = parseInt(despideGalan.value);
+
+        console.log("Opción elegida de Despide: " + opcion);
+    
+        switch (opcion) {
+            case 1:
+                puntos = 10;
+                break;
+            case 2:
+                puntos = 6;
+                break
+            case 3:
+                puntos = 4;
+                break
+            case 4:
+                puntos = 1;
+                break;
+            default:
+                puntos = 0;
+        }
+        
+        this.puntosDespide = puntos;
+
+        return puntos;
+    }
+
+    obtenerPuntosMiradaDOM() {
+        let puntos = 0;
+        let miradaGalan;
+        let opcion = 0;
+    
+        miradaGalan = document.getElementById("miradaGalan");
+        opcion = parseInt(miradaGalan.value);
+
+        console.log("Opción elegida de Mirada: " + opcion);
+    
+        switch (opcion) {
+            case 1:
+                puntos = 6;
+                break;
+            case 2:
+                puntos = 8;
+                break
+            case 3:
+                puntos = 10;
+                break
+            case 4:
+                puntos = 1;
+                break;
+            default:
+                puntos = 0;
+        }
+        
+        this.puntosMirada = puntos;
+
+        return puntos;    
+    }
+
+    obtenerPuntosLugarDOM() {
+        let puntos = 0;
+        let lugarGalan;
+        let opcion = 0;
+    
+        lugarGalan = document.getElementById("lugarGalan");
+        opcion = parseInt(lugarGalan.value);
+
+        console.log("Opción elegida de Lugar: " + opcion);
+    
+        switch (opcion) {
+            case 1:
+                puntos = 8;
+                break;
+            case 2:
+                puntos = 5;
+                break
+            case 3:
+                puntos = 2;
+                break
+            case 4:
+                puntos = 10;
+                break;
+            default:
+                puntos = 0;
+        }
+        
+        this.puntosLugar = puntos;
+
+        return puntos;    
+    }
+
+    seducirConArmasDOM() {
+        let armasSeduccionLS;
+        let armasSeduccion;
+        let puntosPorArma;
+        let puntosTotales = 0;
+        let factorPoder = 2;
+        let mensajeFinal = "";
+
+        //Obtengo las armas de seducción a utilizar
+        armasSeduccionLS = this.cargarArmasSeduccionElegidasLS();
+
+        if (armasSeduccionLS.length < 3) {
+            alert("Debe elegir 3 Armas de Seducción");
+            return puntosTotales;
+        }
+
+        //Armo un array de objetos de clase ArmaSeduccion
+        armasSeduccion = [];
+        for (const armaLS of armasSeduccionLS) {
+            let arma = new ArmaSeduccion(armaLS.id, armaLS.nombre, armaLS.poderSeduccion, armaLS.imagen);
+            //let arma = new ArmaSeduccion(...armaLS);
+            armasSeduccion.push(arma);
+        }
+
+        mensajeFinal = "Resultados de su seducción : \n\n";
+
+        for (const arma of armasSeduccion) {
+            const funcionSeductora = arma.obtenerPoder(factorPoder);
+            
+            //Los puntos se calculan en función del animal elegido por el galan
+            puntosPorArma = funcionSeductora(this.galan.puntosAnimal);
+            puntosTotales += puntosPorArma;
+            mensajeFinal += "Por el arma : " + arma.nombre + " obtuvo " + puntosPorArma + " puntos\n";
+            console.log("Por el arma : " + arma.nombre + " obtuvo " + puntosPorArma + " puntos");
+        }
+
+        mensajeFinal += "TOTAL PUNTOS OBTENIDOS : " + puntosTotales;
+
+        console.log(mensajeFinal);
+
+        alert(mensajeFinal);
+
+        this.puntosSeduccion = puntosTotales;
+
+        return puntosTotales;
+    }
+
+    renderMensajeFinal() {
+        let mensajeFinal = "";
+        let mensajeHTML = ""
+        let resultado;
+
+        resultado = document.getElementById("resultado");
+        mensajeFinal = this.obtenerMensajeFinal();
+
+        mensajeHTML = `
+        <div class="card text-bg-primary mb-6" style="max-width: 18rem;">
+            <div class="card-header">El veredicto de Cupido</div>
+            <div class="card-body">
+            <h5 class="card-title">Cupido dice</h5>
+            <p class="card-text">${mensajeFinal}</p>
+            </div>
+        </div>
+        `;
+
+        resultado.innerHTML = mensajeHTML;
+    }
+    
+    seducirDOM() {
+        let nombreGalan;
+        let sobrenombreGalan;
+        let sobreNombreGalan;
+        let animal;
+        let puntosDespedida;
+        let puntosDondemira;
+        let puntosLocacion;
+        let puntosArmas;
+        let mensajeFinal;
+
+        nombreGalan = this.galan.obtenerNombreDOM();
+        if (nombreGalan.trim().length == 0) {
+            return;
+        }
+
+        sobrenombreGalan = this.galan.obtenerSobreombreDOM();
+        if (sobrenombreGalan.trim().length == 0) {
+            return;
+        }
+
+        animal = this.galan.obtenerAnimalDOM();
+
+        console.log("Animal elegido: " + animal);
+
+        puntosDespedida = this.obtenerPuntosDespideDOM();
+        console.log("Puntos Despide : " + puntosDespedida);
+
+        puntosDondemira = this.obtenerPuntosMiradaDOM();
+        console.log("Puntos Mirada : " + puntosDondemira);
+
+        puntosLocacion = this.obtenerPuntosLugarDOM();
+        console.log("Puntos Lugar : " + puntosLocacion);
+
+        puntosArmas = this.seducirConArmasDOM();
+        console.log("Puntos Armas de Seducción : " + puntosArmas);
+        if (puntosArmas <= 0) {
+            return;
+        }
+
+        //Puntos suerte
+        this.puntosSuerte = 30;
+
+        //Mensaje Final 
+        mensajeFinal = cupido.obtenerMensajeFinal();
+        console.log(`Mensaje Final: ${mensajeFinal}`);
+
+        this.renderMensajeFinal();
+
+        
+        return;
+
+    }
+
+    
+}
+
