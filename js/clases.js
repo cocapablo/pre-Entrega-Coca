@@ -338,7 +338,7 @@ class Cupido {
          
             armasRestantes.forEach(arma => {
                 contenidoHTML += `
-                <div class="col-md-2 mb-5 text-center">
+                <div class="col-md-3 mb-5 text-center">
                     <div class="card" >
                     <img src="${arma.imagen}" class="card-img-top" alt="${arma.nombre}">
                         <div class="card-body">
@@ -509,10 +509,10 @@ class Cupido {
         sobrenombre = this.galan.sobrenombre;
         porcentaje = this.obtenerPorcentajeExito();
 
-        principioMensaje = `Tu porcentaje de salir de la FriendZone es de ${porcentaje} %\n`;
+        principioMensaje = `Tu porcentaje de salir de la FriendZone es de ${porcentaje}%. \n`;
         if (porcentaje <= 25) {
             principioMensaje += "Lamentablemente ";
-            finalMensaje = "Ni siquiera sos visto como un amigo.\n Probá utilizar una pancarta gigante para llamar más su atención";
+            finalMensaje = "Ni siquiera sos visto como un amigo.\n Probá utilizar una pancarta gigante para llamar más su atención.";
         }
         else if (porcentaje <= 50) {
             principioMensaje += "El mejor amigo sos ";
@@ -527,7 +527,7 @@ class Cupido {
             finalMensaje = "'Osculum ei cum passione da' (que en latín significa : 'Dale un beso apasionado')";
         }
     
-        mensaje = principioMensaje + nombre + " alias " + sobrenombre + "\n" + finalMensaje;
+        mensaje = principioMensaje + nombre + " alias " + sobrenombre + ". \n" + finalMensaje;
     
         return mensaje;
     }
@@ -820,7 +820,7 @@ class Cupido {
 
         console.log(mensajeFinal);
 
-        alert(mensajeFinal);
+        //alert(mensajeFinal);
 
         this.puntosSeduccion = puntosTotales;
 
@@ -836,7 +836,7 @@ class Cupido {
         mensajeFinal = this.obtenerMensajeFinal();
 
         mensajeHTML = `
-        <div class="card text-bg-primary mb-6" style="max-width: 18rem;">
+        <div class="card text-bg-primary mb-6" style="max-width: 80rem;">
             <div class="card-header">El veredicto de Cupido</div>
             <div class="card-body">
             <h5 class="card-title">Cupido dice</h5>
@@ -892,7 +892,7 @@ class Cupido {
         this.puntosSuerte = 30;
 
         //Mensaje Final 
-        mensajeFinal = cupido.obtenerMensajeFinal();
+        mensajeFinal = this.obtenerMensajeFinal();
         console.log(`Mensaje Final: ${mensajeFinal}`);
 
         this.renderMensajeFinal();
