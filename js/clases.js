@@ -834,7 +834,7 @@ class Cupido {
 
         resultado = document.getElementById("resultado");
         mensajeFinal = this.obtenerMensajeFinal();
-
+        /*
         mensajeHTML = `
         <div class="card text-bg-primary mb-6" style="max-width: 80rem;">
             <div class="card-header">El veredicto de Cupido</div>
@@ -844,6 +844,25 @@ class Cupido {
             </div>
         </div>
         `;
+        */
+
+        mensajeHTML = `
+        <div class="card mb-3" style="max-width: 740px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                <img src="images/cupido.jpeg" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">El veredicto de Cupido</h5>
+                    <p class="card-text">${mensajeFinal}</p>
+                    <p class="card-text"><small class="text-body-secondary">Dice Cupido</small></p>
+                </div>
+                </div>
+            </div>
+        </div>
+        `;
+
 
         resultado.innerHTML = mensajeHTML;
     }
@@ -899,6 +918,163 @@ class Cupido {
 
         
         return;
+
+    }
+
+    
+}
+
+class ChuckNorris {
+    constructor() {
+
+    }
+
+    async obtenerFraseEnIngles() {
+        let fraseChuck;
+        let divChuck;
+        let textoHTML;
+
+        fraseChuck = "";
+        try {
+            const respuesta = await fetch("https://api.chucknorris.io/jokes/random");
+            const data = await respuesta.json(); 
+            
+            fraseChuck = data.value;
+            console.log(data);
+            console.log("Frase de Chuck: " + fraseChuck);
+
+            //Renderizo
+            //this.renderizar(fraseChuck);
+            divChuck = document.getElementById("chuckNorris");
+
+            textoHTML = `
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                    <img src="images/chuckNorris1.jpeg" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">El Humor de Chuck Norris</h5>
+                        <p class="card-text">${fraseChuck}</p>
+                        <p class="card-text"><small class="text-body-secondary">Disfrutá de esta frase de Chuck mientras sufrís por ella</small></p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            console.log(`HTML Chuck Norris: \n${textoHTML}`);
+
+            divChuck.innerHTML = textoHTML;
+        
+        }
+        catch (e) {
+            console.log(e);
+            fraseChuck = "Chuck is not here now";
+        }
+
+        
+    }
+
+    async obtenerFraseEnCastellano() {
+        let fraseChuck;
+        let fraseChuckIngles;
+        let divChuck;
+        let textoHTML;
+
+        fraseChuck = "";
+        try {
+            //Paso 1: Obtengo la frase en inglés
+            let respuesta = await fetch("https://api.chucknorris.io/jokes/random");
+            let data = await respuesta.json(); 
+            
+            fraseChuckIngles = data.value;
+            console.log(data);
+            console.log("Frase de Chuck en Inglés: " + fraseChuck);
+
+            //Paso 2 : Traduzco la frase al español
+            respuesta = await fetch("https://es.libretranslate.com/translate", {
+                method: "POST",
+                body: JSON.stringify({
+                    q: fraseChuckIngles,
+                    source: "auto",
+                    target: "es",
+                    format: "text",
+                    api_key: ""
+                }),
+                headers: { "Content-Type": "application/json" }
+            });
+
+            data = await respuesta.json();
+
+            fraseChuck = data.translatedText;
+
+            console.log(data);
+            console.log("Frase de Chuck en Español: " + fraseChuck);
+
+            //Paso 3: Renderizo
+            divChuck = document.getElementById("chuckNorris");
+
+            textoHTML = `
+            <div class="card mb-3" style="max-width: 540px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                    <img src="images/chuckNorris1.jpeg" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title">El Humor de Chuck Norris</h5>
+                        <p class="card-text">${fraseChuck}</p>
+                        <p class="card-text"><small class="text-body-secondary">Disfrutá de esta frase de Chuck mientras sufrís por ella</small></p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            `;
+
+            console.log(`HTML Chuck Norris: \n${textoHTML}`);
+
+            divChuck.innerHTML = textoHTML;
+        
+        }
+        catch (e) {
+            console.log(e);
+            fraseChuck = "Chuck is not here now";
+        }
+
+        
+    }
+
+    renderizar(fraseChuck) {
+        let divChuck;
+        let textoHTML = "";
+        
+
+        console.log("Frase de Chuck en renderizar: " + fraseChuck);
+        
+        divChuck = document.getElementById("chuckNorris");
+
+        textoHTML = `
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                <img src="images/chuckNorris1.jpeg" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">El Humor de Chuck Norris</h5>
+                    <p class="card-text">${fraseChuck}</p>
+                    <p class="card-text"><small class="text-body-secondary">Disfrutá de esta frase de Chuck mientras sufrís por ella</small></p>
+                </div>
+                </div>
+            </div>
+        </div>
+        `;
+
+        console.log(`HTML Chuck Norris: \n${textoHTML}`);
+
+        divChuck.innerHTML = textoHTML;
 
     }
 
